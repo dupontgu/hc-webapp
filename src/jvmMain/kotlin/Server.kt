@@ -16,6 +16,7 @@ import java.io.File
 import kotlin.io.path.Path
 import kotlin.text.toCharArray
 
+// for running locally only. Runs https (kinda)
 fun main() {
     val keyStoreFile = File("build/keystore.jks")
     val keystore = generateCertificate(
@@ -45,7 +46,6 @@ fun main() {
 
 fun Application.module() {
 
-
     routing {
         static("/static") { resources() }
 
@@ -65,14 +65,18 @@ fun Application.module() {
                         filename = part.originalFileName ?: "output"
                     )
 
+                    suspend fun invalidFile(message: String) {
+                        call.respond(HttpStatusCode.UnsupportedMediaType, message)
+                        responded = true
+                    }
+
                     outputFile.exceptionOrNull()?.let {
                         println("error processing file: ${it.stackTraceToString()}")
-                        call.respond(HttpStatusCode.UnsupportedMediaType, it.localizedMessage)
-                        responded = true
-                        return@forEachPart
+                        return@forEachPart invalidFile(it.localizedMessage)
                     }
 
                     outputFile.getOrNull()?.let {
+                        if (it.length() == 0L) return@forEachPart invalidFile("Output file was empty.")
                         call.response.header(HEADER_CONTENT_DISPOSITION, "$HEADER_ATTACHMENT; filename=\"${it.name}\"")
                         call.respondFile(it)
                         responded = true

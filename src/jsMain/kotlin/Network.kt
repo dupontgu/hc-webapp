@@ -1,3 +1,4 @@
+import dependencies.FileSaver
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.js.*
@@ -16,7 +17,6 @@ sealed class UploadResult(val message: String) {
     sealed class Failure(message: String) : UploadResult(message)
     class UnknownFailure(message: String) : UploadResult.Failure(message)
     class ServerFailure(message: String) : UploadResult.Failure(message)
-    object NoFileSelected : UploadResult.Failure("No File Selected!")
 
     override fun toString(): String {
         return message
@@ -37,7 +37,7 @@ suspend fun uploadFileForProcessing(
         val cb = fileUpload.data.asByteArray()
         val response = client.submitFormWithBinaryData(url = UPLOAD_ENDPOINT, formData {
             append("file", cb, Headers.build {
-                append(HttpHeaders.ContentDisposition, "filename=\"ktor_logo.png\"")
+                append(HttpHeaders.ContentDisposition, "filename=\"${fileUpload.name}\"")
                 append(HttpHeaders.ContentLength, cb.size)
             })
         })
@@ -49,7 +49,7 @@ suspend fun uploadFileForProcessing(
             ?: return UploadResult.ServerFailure("Server did not return a file - did you upload anything?")
         val channel = response.body<ByteArray>()
         val file = Blob(arrayOf(channel))
-        FileSaver.saveAs(file, "${fileUpload.name}.hitclip")
+        FileSaver.saveAs(file, "${fileUpload.name}.$HTCLP_SUFFIX")
     }.exceptionOrNull()?.let {
         return UploadResult.UnknownFailure(it.message ?: "[Unknown Error]")
     }

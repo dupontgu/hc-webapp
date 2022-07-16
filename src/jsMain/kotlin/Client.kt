@@ -9,7 +9,7 @@ import org.jetbrains.compose.web.renderComposable
 
 private const val UPLOAD_FORM_ID = "upload_form"
 
-class DefaultFileProvider(private val formId: String) : FileProvider {
+private class DefaultFileProvider(private val formId: String) : FileProvider {
     override fun getFile(): FileUpload? {
         val dynamicForm = document.getElementById(formId)?.asDynamic() ?: return null
         val file = dynamicForm.files[0] ?: return null
@@ -22,7 +22,7 @@ class DefaultFileProvider(private val formId: String) : FileProvider {
     }
 }
 
-object DefaultFileUploader : FileUploader {
+private object DefaultFileUploader : FileUploader {
     override suspend fun upload(fileUpload: FileUpload) = uploadFileForProcessing(fileUpload)
 }
 
@@ -33,7 +33,7 @@ fun main() {
         viewModel.viewModelScope = rememberCoroutineScope()
         val state by viewModel.state.collectAsState()
         val resetCallback = { viewModel.reset() }
-        when(val delegateState = state) {
+        return@renderComposable when(@Suppress("UnnecessaryVariable") val delegateState = state) {
             is ViewModelState.UploadFailure -> MessageWithButton(
                 message = "Conversion failed!",
                 subtitle = delegateState.failure.message,
@@ -41,7 +41,7 @@ fun main() {
                 onButtonClick = resetCallback
             )
             ViewModelState.UploadSuccess -> MessageWithButton(
-                message = "Conversion success - HitClips file downloaded!",
+                message = "Conversion success - .$HTCLP_SUFFIX file downloaded!",
                 buttonText = "Upload Another",
                 onButtonClick = resetCallback
             )
