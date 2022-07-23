@@ -1,18 +1,9 @@
 import dependencies.FileSaver
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.engine.js.*
 import io.ktor.client.fetch.*
-import io.ktor.client.request.forms.*
-import io.ktor.client.statement.*
 import io.ktor.http.*
-import io.ktor.http.Headers
-import io.ktor.http.HttpHeaders.ContentLength
+import io.ktor.http.HttpMethod.Companion.Post
 import kotlinx.coroutines.await
-import org.khronos.webgl.*
-import org.khronos.webgl.ArrayBuffer
 import org.w3c.files.Blob
-import kotlin.js.Promise
 
 @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
 suspend fun uploadFileForProcessing(
@@ -25,7 +16,7 @@ suspend fun uploadFileForProcessing(
         val formData = js("new FormData()") as FormData
         formData.append("file", fileUpload.data as io.ktor.client.fetch.Blob)
         val initObject = (js("{}") as RequestInit).apply {
-            method = "POST"
+            method = Post.value
             body = formData
         }
         val res = fetch(UPLOAD_ENDPOINT, initObject).await()

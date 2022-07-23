@@ -1,6 +1,6 @@
 import convert.FFMpegConverter
 import io.ktor.http.*
-import io.ktor.http.HttpHeaders.Connection
+import io.ktor.http.HttpHeaders.ContentDisposition
 import io.ktor.http.HttpHeaders.ContentLength
 import io.ktor.http.content.*
 import io.ktor.network.tls.certificates.*
@@ -12,11 +12,9 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.servlet.*
-import kotlinx.coroutines.delay
 import org.slf4j.LoggerFactory
 import java.io.File
 import kotlin.io.path.Path
-import kotlin.text.toCharArray
 
 // for running locally only. Runs https (kinda)
 fun main() {
@@ -91,11 +89,15 @@ fun Application.module() {
                     }
 
                     outputFile.getOrNull()?.let {
-                        if (it.length() == 0L) return@forEachPart invalidFile("Output file was empty.")
+                        if (it.length() == 0L) {
+                            return@forEachPart invalidFile("Output file was empty.")
+                        }
+
                         with (call.response) {
                             header(HEADER_CONTENT_DISPOSITION, "$HEADER_ATTACHMENT; filename=\"${it.name}\"")
                             header(ContentLength, it.length())
                         }
+
                         call.respondFile(it)
                         responded = true
                     }

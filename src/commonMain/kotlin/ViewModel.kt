@@ -58,6 +58,7 @@ class ViewModel<T>(
     fun reset() {
         _enableButton.value = false
         _state.value = ViewModelState.Waiting()
+        webNav.back()
     }
 
     fun onUploadClicked() {

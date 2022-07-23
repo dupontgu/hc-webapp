@@ -22,6 +22,10 @@ class DefaultWebNav<T>(
         window.history.replaceState(data = stateString, title = title)
     }
 
+    override fun back() {
+        window.history.back()
+    }
+
     override val onPop: Flow<T>
         get() = callbackFlow {
             val callback = EventListener { event ->
