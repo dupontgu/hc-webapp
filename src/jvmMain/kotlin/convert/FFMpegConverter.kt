@@ -1,5 +1,6 @@
 package convert
 
+import HTCLP_SUFFIX
 import com.github.kokorin.jaffree.ffmpeg.FFmpeg
 import com.github.kokorin.jaffree.ffmpeg.PipeInput
 import com.github.kokorin.jaffree.ffmpeg.UrlOutput
@@ -23,7 +24,7 @@ class FFMpegConverter(
         fadeOutDurationSeconds: Int? = null,
     ): Result<File> = kotlin.runCatching {
         val interFile = kotlin.io.path.createTempFile(suffix = ".wav")
-        val outputFile = File("$filename.hitclip").apply { delete() }
+        val outputFile = kotlin.io.path.createTempFile(prefix = filename).toFile()
         FFmpeg.atPath(ffmpegBinaryPath)
             .addInput(PipeInput.pumpFrom(inputStream))
             .addOutput(UrlOutput.toPath(interFile))

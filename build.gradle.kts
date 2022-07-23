@@ -1,6 +1,8 @@
 plugins {
     kotlin("multiplatform") version "1.6.20"
     id("org.jetbrains.compose") version "1.2.0-alpha01-dev679"
+    kotlin("plugin.serialization") version "1.6.20"
+    id("com.google.cloud.tools.appengine") version "2.4.1"
     application
 }
 
@@ -24,6 +26,15 @@ repositories {
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 
+appengine {  // App Engine tasks configuration
+    deploy {   // deploy configuration
+        projectId = "GCLOUD_CONFIG"
+        version = "1"
+        stopPreviousVersion = false
+        promote = true
+    }
+}
+
 kotlin {
     jvm {
         compilations.all {
@@ -33,13 +44,19 @@ kotlin {
             useJUnit()
         }
         withJava()
+        apply(plugin = "com.google.cloud.tools.appengine")
     }
     js(IR) {
         binaries.executable()
         browser()
     }
     sourceSets {
-        val commonMain by getting
+        val commonMain by getting {
+            dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
+            }
+        }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
@@ -49,9 +66,11 @@ kotlin {
             dependencies {
                 implementation("io.ktor:ktor-server-netty:$ktorVersion")
                 implementation("io.ktor:ktor-network-tls-certificates:$ktorVersion")
-                implementation(project(":ffmpeg-wrapper"))
+                implementation("com.github.kokorin.jaffree:jaffree:2022.06.03")
                 implementation("org.slf4j:slf4j-api:1.7.36")
                 implementation("org.slf4j:slf4j-simple:1.7.36")
+                implementation( "io.ktor:ktor-server-servlet:2.0.2")
+                compileOnly("javax.servlet:servlet-api:2.3")
                 implementation(compose.runtime)
             }
         }

@@ -12,17 +12,6 @@ import org.khronos.webgl.ArrayBuffer
 import org.w3c.files.Blob
 import kotlin.js.Promise
 
-sealed class UploadResult(val message: String) {
-    object Success : UploadResult("File was converted.")
-    sealed class Failure(message: String) : UploadResult(message)
-    class UnknownFailure(message: String) : UploadResult.Failure(message)
-    class ServerFailure(message: String) : UploadResult.Failure(message)
-
-    override fun toString(): String {
-        return message
-    }
-}
-
 val client = HttpClient(Js)
 
 private suspend fun Blob.asByteArray(): ByteArray {
@@ -31,7 +20,7 @@ private suspend fun Blob.asByteArray(): ByteArray {
 }
 
 suspend fun uploadFileForProcessing(
-    fileUpload: FileUpload
+    fileUpload: FileUpload<Blob>
 ): UploadResult {
     runCatching {
         val cb = fileUpload.data.asByteArray()

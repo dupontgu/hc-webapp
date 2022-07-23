@@ -3,4 +3,5 @@ build/
 output/
 .idea/
 local.properties
-*/.DS_Store
+**/.DS_Store
+src/main/webapp/WEB-INF/dev/

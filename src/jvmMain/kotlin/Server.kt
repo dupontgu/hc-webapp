@@ -9,9 +9,9 @@ import io.ktor.server.netty.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.servlet.*
 import kotlinx.coroutines.delay
 import org.slf4j.LoggerFactory
-import wrapper.FFMpegWrapper.ffmpegPath
 import java.io.File
 import kotlin.io.path.Path
 import kotlin.text.toCharArray
@@ -45,14 +45,25 @@ fun main() {
 }
 
 fun Application.module() {
-
     routing {
         static("/static") { resources() }
 
-        get("/") { call.respondRedirect { set(path = "static/index.html") } }
+        get("/") {
+            call.respondRedirect { set(path = "static/index.html") }
+        }
+
+        get("/$START_PAGE_UPLOAD") {
+            call.respondRedirect {
+                set(path = "static/index.html") {
+                    parameters.append(START_PAGE_PARAM, START_PAGE_UPLOAD)
+                }
+            }
+        }
 
         post(UPLOAD_ENDPOINT) {
-            val converter = FFMpegConverter(Path(this::class.java.classLoader.getResource(ffmpegPath)!!.path))
+            val p = this@module.attributes[ServletContextAttribute]
+                .getResource("/WEB-INF/${FFMpegWrapper.ffmpegPath}").path
+            val converter = FFMpegConverter(Path(p))
             val multipart = call.receiveMultipart()
             var responded = false
             delay(1500)
@@ -80,7 +91,6 @@ fun Application.module() {
                         call.response.header(HEADER_CONTENT_DISPOSITION, "$HEADER_ATTACHMENT; filename=\"${it.name}\"")
                         call.respondFile(it)
                         responded = true
-                        it.delete()
                     }
                     println("File ${part.originalFileName} processed.")
                 }
