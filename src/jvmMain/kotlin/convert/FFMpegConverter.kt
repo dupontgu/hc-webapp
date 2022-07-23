@@ -1,6 +1,5 @@
 package convert
 
-import HTCLP_SUFFIX
 import com.github.kokorin.jaffree.ffmpeg.FFmpeg
 import com.github.kokorin.jaffree.ffmpeg.PipeInput
 import com.github.kokorin.jaffree.ffmpeg.UrlOutput
