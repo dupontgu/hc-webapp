@@ -51,6 +51,13 @@ fun WaitingScreen(
     HcButton("Upload File", enableUploadButton) {
         viewModel.onUploadClicked()
     }
+    Br()
+    Div {
+        Text("Conversion powered by ")
+        A("https://ffmpeg.org/") {
+            Text("FFmpeg.")
+        }
+    }
 }
 
 @Composable

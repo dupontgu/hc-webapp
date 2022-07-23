@@ -5,10 +5,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.browser.document
 import kotlinx.browser.window
 import org.jetbrains.compose.web.attributes.*
+import org.jetbrains.compose.web.css.Style
 import org.jetbrains.compose.web.dom.*
 import org.jetbrains.compose.web.renderComposable
 import org.w3c.dom.url.URLSearchParams
 import org.w3c.files.Blob
+import style.AppStylesheet
+import style.Container
 import view.Landing
 import view.MessageWithButton
 import view.WaitingScreen
@@ -45,7 +48,10 @@ fun main() {
     val viewModel = ViewModel(fileProvider, DefaultFileUploader, webNav, startPageState)
     renderComposable(rootElementId = "root") {
         viewModel.viewModelScope = rememberCoroutineScope()
-        Root(viewModel)
+        Style(AppStylesheet)
+        Container {
+            Root(viewModel)
+        }
     }
 }
 

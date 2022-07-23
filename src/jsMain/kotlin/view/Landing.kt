@@ -2,6 +2,7 @@ package view
 
 import androidx.compose.runtime.Composable
 import org.jetbrains.compose.web.dom.*
+import style.Container
 
 @Composable
 fun Landing() {
@@ -10,7 +11,9 @@ fun Landing() {
     }
     Div {
         P {
-            Text("Open source, HitClips compatible audio cartridges. Check out the intro video:")
+            Text("Open source, HitClips compatible audio cartridges - Coming Soon.")
+            Br()
+            Text("Check out the intro video:")
         }
     }
     Div {
@@ -30,5 +33,3 @@ fun Landing() {
         }
     }
 }
-
-//<iframe width="560" height="315" src="https://www.youtube.com/embed/T5bPNSPXJuc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
