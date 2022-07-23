@@ -18,7 +18,7 @@ class ViewModel<T>(
     private val fileProvider: FileProvider<T>,
     private val fileUploader: FileUploader<T>,
     private val webNav: StateNav<ViewModelState>,
-    private val initialState: ViewModelState
+    initialState: ViewModelState
 ) {
     private lateinit var _viewModelScope: CoroutineScope
     var viewModelScope: CoroutineScope
@@ -30,7 +30,7 @@ class ViewModel<T>(
 
     private var navJob: Job? = null
 
-    private val _state = MutableStateFlow<ViewModelState>(initialState)
+    private val _state = MutableStateFlow(initialState)
     val state: StateFlow<ViewModelState> = _state
 
     private val _enableButton = MutableStateFlow(false)
@@ -38,10 +38,9 @@ class ViewModel<T>(
 
     private fun monitorNav() {
         navJob?.cancel()
-        webNav.replace(ViewModelState.Waiting(), "Waiting")
+        webNav.replace(ViewModelState.Waiting(), "HotClasps")
         navJob = viewModelScope.launch {
             webNav.onPop.collect {
-                println("pop $it")
                 _state.value = it
             }
         }
@@ -53,14 +52,7 @@ class ViewModel<T>(
     }
 
     fun onFileInputChanged() {
-        val file = fileProvider.getFile()
-        if (file != null) {
-            println("ready to upload")
-            _enableButton.value = true
-        } else {
-            println("no file selected")
-            _enableButton.value = false
-        }
+        _enableButton.value = fileProvider.getFile() != null
     }
 
     fun reset() {
@@ -69,13 +61,10 @@ class ViewModel<T>(
     }
 
     fun onUploadClicked() {
-        println("upload clicked")
         val file = fileProvider.getFile() ?: return
-        println("uploading file: ${file.name}")
         _state.value = ViewModelState.Uploading()
         viewModelScope.launch {
             val result = fileUploader.upload(file)
-            println("upload result: $result")
             val updatedState = when(result) {
                 is UploadResult.Failure -> ViewModelState.UploadFailure(result)
                 UploadResult.Success -> ViewModelState.UploadSuccess()

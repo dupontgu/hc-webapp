@@ -71,7 +71,7 @@ fun Root(viewModel: ViewModel<Blob>) {
             buttonText = "Upload Another",
             onButtonClick = resetCallback
         )
-        is ViewModelState.Uploading -> MessageWithButton(message = "Uploading...")
+        is ViewModelState.Uploading -> MessageWithButton(message = "Processing...")
         is ViewModelState.Waiting -> WaitingScreen(viewModel)
         is ViewModelState.Landing -> Landing()
     }

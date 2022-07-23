@@ -1,5 +1,7 @@
 import convert.FFMpegConverter
 import io.ktor.http.*
+import io.ktor.http.HttpHeaders.Connection
+import io.ktor.http.HttpHeaders.ContentLength
 import io.ktor.http.content.*
 import io.ktor.network.tls.certificates.*
 import io.ktor.server.application.*
@@ -61,12 +63,14 @@ fun Application.module() {
         }
 
         post(UPLOAD_ENDPOINT) {
-            val p = this@module.attributes[ServletContextAttribute]
+            // This is annoying, and will probably only work on GCloud or similar
+            // ffmpeg binaries are bundled as a part of the WAR, _NOT_ as jvm resources.
+            // could not figure out how to execute them when bundling in a jar.
+            val ffmpegPath = this@module.attributes[ServletContextAttribute]
                 .getResource("/WEB-INF/${FFMpegWrapper.ffmpegPath}").path
-            val converter = FFMpegConverter(Path(p))
+            val converter = FFMpegConverter(Path(ffmpegPath))
             val multipart = call.receiveMultipart()
             var responded = false
-            delay(1500)
             multipart.forEachPart { part ->
                 if (part is PartData.FileItem) {
                     // only process a single file
@@ -88,7 +92,10 @@ fun Application.module() {
 
                     outputFile.getOrNull()?.let {
                         if (it.length() == 0L) return@forEachPart invalidFile("Output file was empty.")
-                        call.response.header(HEADER_CONTENT_DISPOSITION, "$HEADER_ATTACHMENT; filename=\"${it.name}\"")
+                        with (call.response) {
+                            header(HEADER_CONTENT_DISPOSITION, "$HEADER_ATTACHMENT; filename=\"${it.name}\"")
+                            header(ContentLength, it.length())
+                        }
                         call.respondFile(it)
                         responded = true
                     }

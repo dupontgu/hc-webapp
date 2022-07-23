@@ -14,28 +14,23 @@ class DefaultWebNav<T>(
 ) : StateNav<T> {
     override fun push(state: T, title: String) {
         val stateString = Json.encodeToString(serializationStrategy, state)
-        println("push state: $stateString")
         window.history.pushState(data = stateString, title = title)
     }
 
     override fun replace(state: T, title: String) {
         val stateString = Json.encodeToString(serializationStrategy, state)
-        println("replace state: $stateString")
         window.history.replaceState(data = stateString, title = title)
     }
 
     override val onPop: Flow<T>
         get() = callbackFlow {
             val callback = EventListener { event ->
-                println(window.history.length)
-                println("got event popped ${JSON.stringify(event.asDynamic().state)}")
                 val stateString = event.asDynamic().state as? String
                 val state = stateString?.let { Json.decodeFromString(deserializationStrategy, it) }
                 state?.let { trySend(it) }
             }
             window.addEventListener("popstate", callback)
             awaitClose {
-                println("removed callback")
                 window.removeEventListener("popstate", callback)
             }
         }

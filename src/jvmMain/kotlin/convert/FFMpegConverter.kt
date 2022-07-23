@@ -63,6 +63,7 @@ class FFMpegConverter(
                 }
             }
         }
+        println("output: ${outputFile.length()}")
         interFile.deleteIfExists()
         return@runCatching outputFile
     }
