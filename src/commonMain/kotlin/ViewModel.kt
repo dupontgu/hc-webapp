@@ -8,6 +8,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed interface ViewModelState {
     @Serializable data class Landing(val void: Unit = Unit) : ViewModelState
+    @Serializable data class Setup(val void: Unit = Unit) : ViewModelState
     @Serializable data class Waiting(val void: Unit = Unit) : ViewModelState
     @Serializable data class UploadSuccess(val void: Unit = Unit) : ViewModelState
     @Serializable data class Uploading(val void: Unit = Unit) : ViewModelState

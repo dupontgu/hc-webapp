@@ -4,4 +4,10 @@ const val HEADER_ATTACHMENT = "attachment"
 const val HTCLP_SUFFIX = "htclp"
 
 const val START_PAGE_PARAM = "start"
-const val START_PAGE_UPLOAD = "upload"
+enum class StartPage(val key: String) {
+    DEFAULT("default"), UPLOAD("upload"), SETUP("setup");
+
+    companion object {
+        fun from(type: String?): StartPage = values().firstOrNull { it.key == type } ?: DEFAULT
+    }
+}

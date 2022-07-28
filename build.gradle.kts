@@ -81,6 +81,9 @@ kotlin {
                 implementation(npm("file-saver", "2.0.5"))
                 implementation(compose.web.core)
                 implementation(compose.runtime)
+                implementation(compose.material)
+                implementation(compose.ui)
+                implementation(compose.foundation)
             }
         }
         val jsTest by getting

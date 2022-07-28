@@ -14,6 +14,7 @@ import style.AppStylesheet
 import style.Container
 import view.Landing
 import view.MessageWithButton
+import view.SetupView
 import view.WaitingScreen
 
 const val UPLOAD_FORM_ID = "upload_form"
@@ -37,12 +38,15 @@ private object DefaultFileUploader : FileUploader<Blob> {
 
 fun main() {
     val params = URLSearchParams(window.location.search)
-    val startPageState = params.get(START_PAGE_PARAM).let {
-        when(it) {
-            START_PAGE_UPLOAD -> ViewModelState.Waiting()
-            else -> ViewModelState.Landing()
+    val startPageState = params.get(START_PAGE_PARAM)
+        .let { StartPage.from(it) }
+        .let {
+            when (it) {
+                StartPage.DEFAULT -> ViewModelState.Landing()
+                StartPage.UPLOAD -> ViewModelState.Waiting()
+                StartPage.SETUP -> ViewModelState.Setup()
+            }
         }
-    }
     val fileProvider = DefaultFileProvider(UPLOAD_FORM_ID)
     val webNav = DefaultWebNav(ViewModelState.serializer(), ViewModelState.serializer())
     val viewModel = ViewModel(fileProvider, DefaultFileUploader, webNav, startPageState)
@@ -59,7 +63,7 @@ fun main() {
 fun Root(viewModel: ViewModel<Blob>) {
     val state by viewModel.state.collectAsState()
     val resetCallback = { viewModel.reset() }
-    return when(@Suppress("UnnecessaryVariable") val delegateState = state) {
+    return when (@Suppress("UnnecessaryVariable") val delegateState = state) {
         is ViewModelState.UploadFailure -> MessageWithButton(
             message = "Conversion failed!",
             subtitle = delegateState.failure.message,
@@ -74,5 +78,6 @@ fun Root(viewModel: ViewModel<Blob>) {
         is ViewModelState.Uploading -> MessageWithButton(message = "Processing...")
         is ViewModelState.Waiting -> WaitingScreen(viewModel)
         is ViewModelState.Landing -> Landing()
+        is ViewModelState.Setup -> SetupView()
     }
 }

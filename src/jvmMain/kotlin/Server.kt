@@ -52,10 +52,12 @@ fun Application.module() {
             call.respondRedirect { set(path = "static/index.html") }
         }
 
-        get("/$START_PAGE_UPLOAD") {
-            call.respondRedirect {
-                set(path = "static/index.html") {
-                    parameters.append(START_PAGE_PARAM, START_PAGE_UPLOAD)
+        StartPage.values().forEach { page ->
+            get("/${page.key}") {
+                call.respondRedirect {
+                    set(path = "static/index.html") {
+                        parameters.append(START_PAGE_PARAM, page.key)
+                    }
                 }
             }
         }
