@@ -55,7 +55,7 @@ fun SetupStep(step: SetupStep) {
 
 @Composable
 fun PrepareAudioStep() {
-    Text("Visit the ")
+    Text("- Visit the ")
     A("/upload") { Text("upload") }
     Line(" page to convert your audio files to the custom .htclp format.")
     Line("You can create as many files as you want, but keep in mind that you'll only have ~12MB of storage.")
@@ -130,7 +130,7 @@ fun ReplaceStep() {
 
 @Composable
 fun Line(text: String) {
-    Text(text)
+    Text("- $text")
     Br()
 }
 
