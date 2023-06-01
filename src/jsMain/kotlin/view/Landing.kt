@@ -13,16 +13,13 @@ fun Landing() {
         P {
             Text("Open source, HitClips compatible audio cartridges - Coming Soon.")
             Br()
-            Text("Check out the intro video:")
+            Text("Check out the intro video on YouTube:")
         }
     }
     Div {
-        Iframe({
-            attr("width", "560")
-            attr("height", "315")
-            attr("src", "https://www.youtube.com/embed/T5bPNSPXJuc")
-            attr("allow", "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture")
-        })
+        A("https://youtu.be/T5bPNSPXJuc") {
+            Img("https://img.youtube.com/vi/T5bPNSPXJuc/0.jpg")
+        }
     }
     Div {
         H2 {
