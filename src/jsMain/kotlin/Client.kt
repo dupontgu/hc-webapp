@@ -2,11 +2,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import dependencies.FFmpeg
+import dependencies.FFmpegRoot
 import kotlinx.browser.document
 import kotlinx.browser.window
-import org.jetbrains.compose.web.attributes.*
 import org.jetbrains.compose.web.css.Style
-import org.jetbrains.compose.web.dom.*
 import org.jetbrains.compose.web.renderComposable
 import org.w3c.dom.url.URLSearchParams
 import org.w3c.files.Blob
@@ -32,10 +32,6 @@ private class DefaultFileProvider(private val formId: String) : FileProvider<Blo
     }
 }
 
-private object DefaultFileUploader : FileUploader<Blob> {
-    override suspend fun upload(fileUpload: FileUpload<Blob>) = uploadFileForProcessing(fileUpload)
-}
-
 fun main() {
     val params = URLSearchParams(window.location.search)
     val startPageState = params.get(START_PAGE_PARAM)
@@ -49,7 +45,7 @@ fun main() {
         }
     val fileProvider = DefaultFileProvider(UPLOAD_FORM_ID)
     val webNav = DefaultWebNav(ViewModelState.serializer(), ViewModelState.serializer())
-    val viewModel = ViewModel(fileProvider, DefaultFileUploader, webNav, startPageState)
+    val viewModel = ViewModel(fileProvider, BrowserFileConverter, webNav, startPageState)
     renderComposable(rootElementId = "root") {
         viewModel.viewModelScope = rememberCoroutineScope()
         Style(AppStylesheet)

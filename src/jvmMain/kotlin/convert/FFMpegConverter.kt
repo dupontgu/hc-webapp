@@ -3,6 +3,7 @@ package convert
 import com.github.kokorin.jaffree.ffmpeg.FFmpeg
 import com.github.kokorin.jaffree.ffmpeg.PipeInput
 import com.github.kokorin.jaffree.ffmpeg.UrlOutput
+import formatHcSample
 import mapInPlace
 import java.io.File
 import java.io.InputStream
@@ -66,15 +67,4 @@ class FFMpegConverter(
         interFile.deleteIfExists()
         return@runCatching outputFile
     }
-}
-
-/**
- * Formats samples so that they are easier to be output directly from the HC firmware.
- * Effectively, the highest order bit determines which PWM output the sample will be emitted from
- * Remaining 7 bits indicate "magnitude" of a sample. If highest order bit is not set, magnitude is inverted.
- * Not exactly sure why, but this is what the HC Players are expecting.
- */
-fun Byte.formatHcSample(): Byte {
-    if (this.toInt().shr(7) != 0) return this
-    return (127 - (this and 127)).toByte()
 }

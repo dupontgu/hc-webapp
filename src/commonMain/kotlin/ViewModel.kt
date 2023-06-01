@@ -12,12 +12,12 @@ sealed interface ViewModelState {
     @Serializable data class Waiting(val void: Unit = Unit) : ViewModelState
     @Serializable data class UploadSuccess(val void: Unit = Unit) : ViewModelState
     @Serializable data class Uploading(val void: Unit = Unit) : ViewModelState
-    @Serializable data class UploadFailure(val failure: UploadResult.Failure) : ViewModelState
+    @Serializable data class UploadFailure(val failure: ConversionResult.Failure) : ViewModelState
 }
 
 class ViewModel<T>(
     private val fileProvider: FileProvider<T>,
-    private val fileUploader: FileUploader<T>,
+    private val fileConverter: FileConverter<T>,
     private val webNav: StateNav<ViewModelState>,
     initialState: ViewModelState
 ) {
@@ -27,6 +27,7 @@ class ViewModel<T>(
         set(value) {
             _viewModelScope = value
             monitorNav()
+            value.launch { fileConverter.initialize() }
         }
 
     private var navJob: Job? = null
@@ -66,10 +67,9 @@ class ViewModel<T>(
         val file = fileProvider.getFile() ?: return
         _state.value = ViewModelState.Uploading()
         viewModelScope.launch {
-            val result = fileUploader.upload(file)
-            val updatedState = when(result) {
-                is UploadResult.Failure -> ViewModelState.UploadFailure(result)
-                UploadResult.Success -> ViewModelState.UploadSuccess()
+            val updatedState = when(val result = fileConverter.convert(file)) {
+                is ConversionResult.Failure -> ViewModelState.UploadFailure(result)
+                ConversionResult.Success -> ViewModelState.UploadSuccess()
             }
             pushNav(updatedState)
         }

@@ -29,9 +29,9 @@ repositories {
 appengine {  // App Engine tasks configuration
     deploy {   // deploy configuration
         projectId = "GCLOUD_CONFIG"
-        version = "1"
+        version = "2"
         stopPreviousVersion = false
-        promote = true
+        promote = false
     }
 }
 
@@ -70,6 +70,8 @@ kotlin {
                 implementation("org.slf4j:slf4j-api:1.7.36")
                 implementation("org.slf4j:slf4j-simple:1.7.36")
                 implementation( "io.ktor:ktor-server-servlet:2.0.2")
+                implementation("io.ktor:ktor-server-cors:2.0.2")
+                implementation("io.ktor:ktor-server-default-headers:2.0.2")
                 compileOnly("javax.servlet:servlet-api:2.3")
                 implementation(compose.runtime)
             }
@@ -79,6 +81,8 @@ kotlin {
             dependencies {
                 implementation("io.ktor:ktor-client-js:$ktorVersion")
                 implementation(npm("file-saver", "2.0.5"))
+                implementation(npm("@ffmpeg.wasm/main", "0.12.0"))
+                implementation(npm("wavefile-reader", "1.1.1"))
                 implementation(compose.web.core)
                 implementation(compose.runtime)
                 implementation(compose.material)

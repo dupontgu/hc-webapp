@@ -5,10 +5,18 @@ import io.ktor.http.HttpMethod.Companion.Post
 import kotlinx.coroutines.await
 import org.w3c.files.Blob
 
+object CloudFileConverter : FileConverter<Blob> {
+    override suspend fun initialize() {
+        // NoOp
+    }
+
+    override suspend fun convert(fileUpload: FileUpload<Blob>) = uploadFileForProcessing(fileUpload)
+}
+
 @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
 suspend fun uploadFileForProcessing(
     fileUpload: FileUpload<Blob>
-): UploadResult {
+): ConversionResult {
     runCatching {
         // Would have preferred to use a ktor client here, but:
         // A: converting from a kotlin ByteArray to a Blob for the FileSaver was annoying
@@ -21,16 +29,16 @@ suspend fun uploadFileForProcessing(
         }
         val res = fetch(UPLOAD_ENDPOINT, initObject).await()
         if (res.status != HttpStatusCode.OK.value.toShort()) {
-            return UploadResult.ServerFailure(res.text().await())
+            return ConversionResult.ServerFailure(res.text().await())
         }
 
         res.headers.get(HEADER_CONTENT_DISPOSITION)
             ?.takeIf { it.contains(HEADER_ATTACHMENT) }
-            ?: return UploadResult.ServerFailure("Server did not return a file - did you upload anything?")
+            ?: return ConversionResult.ServerFailure("Server did not return a file - did you upload anything?")
 
         FileSaver.saveAs(res.blob().await(), "${fileUpload.name}.$HTCLP_SUFFIX")
     }.exceptionOrNull()?.let {
-        return UploadResult.UnknownFailure(it.message ?: "[Unknown Error]")
+        return ConversionResult.UnknownFailure(it.message ?: "[Unknown Error]")
     }
-    return UploadResult.Success
+    return ConversionResult.Success
 }

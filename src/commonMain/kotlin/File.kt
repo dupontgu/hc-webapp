@@ -7,6 +7,7 @@ interface FileProvider<T> {
     fun getFile(): FileUpload<T>?
 }
 
-interface FileUploader<T> {
-    suspend fun upload(fileUpload: FileUpload<T>): UploadResult
+interface FileConverter<T> {
+    suspend fun initialize()
+    suspend fun convert(fileUpload: FileUpload<T>): ConversionResult
 }
