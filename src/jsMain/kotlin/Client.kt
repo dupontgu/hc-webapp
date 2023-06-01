@@ -2,8 +2,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import dependencies.FFmpeg
-import dependencies.FFmpegRoot
 import kotlinx.browser.document
 import kotlinx.browser.window
 import org.jetbrains.compose.web.css.Style
