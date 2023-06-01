@@ -30,8 +30,8 @@ appengine {  // App Engine tasks configuration
     deploy {   // deploy configuration
         projectId = "GCLOUD_CONFIG"
         version = "2"
-        stopPreviousVersion = false
-        promote = false
+        stopPreviousVersion = true
+        promote = true
     }
 }
 
