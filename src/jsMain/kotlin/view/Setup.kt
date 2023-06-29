@@ -8,7 +8,7 @@ import org.jetbrains.compose.web.dom.*
 import view.SetupStep.*
 
 enum class SetupStep {
-    PREPARE_AUDIO, PREPARE_ARTWORK, IDENTIFY_PARTS, REMOVE_CLIP, ATTACH_DEBUGGER, TRANSFER_AUDIO, REPLACE_CLIP, PLAY_AUDIO
+    PREPARE_AUDIO, IDENTIFY_PARTS, REMOVE_CLIP, ATTACH_DEBUGGER, TRANSFER_AUDIO, PREPARE_ARTWORK, REPLACE_CLIP, PLAY_AUDIO
 }
 
 val SetupStep.title: String
@@ -60,15 +60,8 @@ fun PrepareAudioStep() {
     Text("- Visit the ")
     A("/upload") { Text("upload") }
     Text(" page to convert your audio files to the custom .htclp format.")
+    Br()
     Line("You can create as many files as you want, but keep in mind that you'll only have ~12MB of storage.")
-}
-
-@Composable
-fun PrepareArtworkStep() {
-    Text("- Visit the ")
-    A("/artwork") { Text("artwork") }
-    Text(" page to convert an image to the exact size of the HotClasps case and prepare for printing.")
-    Line("You can do this on your own if you want! The window of the case is exactly 20mm X 20mm.")
 }
 
 @Composable
@@ -91,6 +84,7 @@ fun RemoveClipStep() {
     Line("Gently (but firmly) push the case wall and pull the circuit board towards you until the tab is out of the case.")
     Line("Once it is out, slide out the other tab remove the circuit board completely.")
     InlineImage("/static/img/setup_remove_2.jpg")
+    Line("Remove the plastic shim and set it aside.")
 }
 
 @Composable
@@ -124,6 +118,19 @@ fun InlineImage(src: String) {
     MultBr(1)
     Img(src) { style { width(500.px) } }
     MultBr(1)
+}
+
+@Composable
+fun PrepareArtworkStep() {
+    Text("- Visit the ")
+    A("/artwork") { Text("artwork") }
+    Text(" page to convert an image to the exact size of the HotClasps case and prepare for printing.")
+    Br()
+    Line("You can do this on your own if you want! The window of the case is exactly 20mm X 20mm.")
+    Line("Place your artwork in the case with the image facing the front window.")
+    Line("Replace the plastic shim on top of the artwork. The flat side of the shim should be against the image. The raised bar should be aligned with the top of the case.")
+    Line("(Optional): You may want to put a dab of glue or small piece of double-sided tape between the shim and paper for extra security.")
+    InlineImage("/static/img/setup_artwork_shim.jpg")
 }
 
 @Composable
