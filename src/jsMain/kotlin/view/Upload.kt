@@ -59,19 +59,3 @@ fun WaitingScreen(
         }
     }
 }
-
-@Composable
-fun HcButton(
-    message: String,
-    enable: Boolean = true,
-    onButtonClick: () -> Unit
-) {
-    Div {
-        Button(attrs = {
-            if (!enable) disabled()
-            onClick { onButtonClick() }
-        }) {
-            Text(message)
-        }
-    }
-}

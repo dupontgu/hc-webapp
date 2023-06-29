@@ -8,12 +8,13 @@ import org.jetbrains.compose.web.dom.*
 import view.SetupStep.*
 
 enum class SetupStep {
-    PREPARE_AUDIO, IDENTIFY_PARTS, REMOVE_CLIP, ATTACH_DEBUGGER, TRANSFER_AUDIO, REPLACE_CLIP, PLAY_AUDIO
+    PREPARE_AUDIO, PREPARE_ARTWORK, IDENTIFY_PARTS, REMOVE_CLIP, ATTACH_DEBUGGER, TRANSFER_AUDIO, REPLACE_CLIP, PLAY_AUDIO
 }
 
 val SetupStep.title: String
     get() = when (this) {
         PREPARE_AUDIO -> "Prepare your audio."
+        PREPARE_ARTWORK -> "Print your artwork."
         IDENTIFY_PARTS -> "Identify the components."
         REMOVE_CLIP -> "Remove the circuit board from the case."
         ATTACH_DEBUGGER -> "Attach the circuit board to the debugger."
@@ -42,6 +43,7 @@ fun SetupStep(step: SetupStep) {
         Div({ style { paddingLeft(20.px) } }) {
             return@Div when (step) {
                 PREPARE_AUDIO -> PrepareAudioStep()
+                PREPARE_ARTWORK -> PrepareArtworkStep()
                 IDENTIFY_PARTS -> IdentifyComponentsStep()
                 REMOVE_CLIP -> RemoveClipStep()
                 ATTACH_DEBUGGER -> AttachDebuggerStep()
@@ -57,8 +59,16 @@ fun SetupStep(step: SetupStep) {
 fun PrepareAudioStep() {
     Text("- Visit the ")
     A("/upload") { Text("upload") }
-    Line(" page to convert your audio files to the custom .htclp format.")
+    Text(" page to convert your audio files to the custom .htclp format.")
     Line("You can create as many files as you want, but keep in mind that you'll only have ~12MB of storage.")
+}
+
+@Composable
+fun PrepareArtworkStep() {
+    Text("- Visit the ")
+    A("/artwork") { Text("artwork") }
+    Text(" page to convert an image to the exact size of the HotClasps case and prepare for printing.")
+    Line("You can do this on your own if you want! The window of the case is exactly 20mm X 20mm.")
 }
 
 @Composable
@@ -126,15 +136,4 @@ fun ReplaceStep() {
     Line("Gently push the other side of the circuit board down into the case until the second tab clicks into place.")
     Line("It may help to slightly bend the slotted case wall away to allow the circuit board to slide down.")
     InlineImage("/static/img/setup_replace.jpg")
-}
-
-@Composable
-fun Line(text: String) {
-    Text("- $text")
-    Br()
-}
-
-@Composable
-fun MultBr(times: Int) {
-    repeat(times) { Br() }
 }

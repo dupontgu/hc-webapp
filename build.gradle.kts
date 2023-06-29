@@ -29,7 +29,7 @@ repositories {
 appengine {  // App Engine tasks configuration
     deploy {   // deploy configuration
         projectId = "GCLOUD_CONFIG"
-        version = "2"
+        version = "3"
         stopPreviousVersion = true
         promote = true
     }
@@ -48,7 +48,7 @@ kotlin {
     }
     js(IR) {
         binaries.executable()
-        browser()
+        browser {}
     }
     sourceSets {
         val commonMain by getting {
@@ -83,6 +83,9 @@ kotlin {
                 implementation(npm("file-saver", "2.0.5"))
                 implementation(npm("@ffmpeg.wasm/main", "0.12.0"))
                 implementation(npm("wavefile-reader", "1.1.1"))
+                implementation(npm("tinycrop", "1.7.0"))
+                implementation(npm("jspdf", "2.5.1"))
+                implementation(npm("buffer", "6.0.3"))
                 implementation(compose.web.core)
                 implementation(compose.runtime)
                 implementation(compose.material)

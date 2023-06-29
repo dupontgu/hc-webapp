@@ -10,14 +10,11 @@ import org.w3c.dom.url.URLSearchParams
 import org.w3c.files.Blob
 import style.AppStylesheet
 import style.Container
-import view.Landing
-import view.MessageWithButton
-import view.SetupView
-import view.WaitingScreen
+import view.*
 
 const val UPLOAD_FORM_ID = "upload_form"
 
-private class DefaultFileProvider(private val formId: String) : FileProvider<Blob> {
+class DefaultFileProvider(private val formId: String) : FileProvider<Blob> {
     override fun getFile(): FileUpload<Blob>? {
         val dynamicForm = document.getElementById(formId)?.asDynamic() ?: return null
         val file = dynamicForm.files[0] ?: return null
@@ -39,6 +36,7 @@ fun main() {
                 StartPage.DEFAULT -> ViewModelState.Landing()
                 StartPage.UPLOAD -> ViewModelState.Waiting()
                 StartPage.SETUP -> ViewModelState.Setup()
+                StartPage.ARTWORK -> ViewModelState.Artwork()
             }
         }
     val fileProvider = DefaultFileProvider(UPLOAD_FORM_ID)
@@ -73,5 +71,6 @@ fun Root(viewModel: ViewModel<Blob>) {
         is ViewModelState.Waiting -> WaitingScreen(viewModel)
         is ViewModelState.Landing -> Landing()
         is ViewModelState.Setup -> SetupView()
+        is ViewModelState.Artwork -> ArtworkView()
     }
 }

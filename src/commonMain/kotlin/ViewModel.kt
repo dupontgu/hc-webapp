@@ -13,6 +13,7 @@ sealed interface ViewModelState {
     @Serializable data class UploadSuccess(val void: Unit = Unit) : ViewModelState
     @Serializable data class Uploading(val void: Unit = Unit) : ViewModelState
     @Serializable data class UploadFailure(val failure: ConversionResult.Failure) : ViewModelState
+    @Serializable data class Artwork(val void: Unit = Unit) : ViewModelState
 }
 
 class ViewModel<T>(
