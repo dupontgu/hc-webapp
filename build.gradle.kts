@@ -29,7 +29,7 @@ repositories {
 appengine {  // App Engine tasks configuration
     deploy {   // deploy configuration
         projectId = "GCLOUD_CONFIG"
-        version = "3"
+        version = "4"
         stopPreviousVersion = true
         promote = true
     }

@@ -1,6 +1,7 @@
 package view
 
 import androidx.compose.runtime.Composable
+import org.jetbrains.compose.web.css.maxWidth
 import org.jetbrains.compose.web.css.paddingLeft
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.width
@@ -36,7 +37,9 @@ fun SetupView() {
 
 @Composable
 fun SetupStep(step: SetupStep) {
-    Div {
+    Div(
+        { style { maxWidth(900.px) } }
+    ) {
         H3 {
             Text("${step.ordinal + 1}. ${step.title}")
         }
@@ -49,7 +52,7 @@ fun SetupStep(step: SetupStep) {
                 ATTACH_DEBUGGER -> AttachDebuggerStep()
                 TRANSFER_AUDIO -> TransferStep()
                 REPLACE_CLIP -> ReplaceStep()
-                PLAY_AUDIO ->  { }
+                PLAY_AUDIO -> PlayAudioStep()
             }
         }
     }
@@ -82,6 +85,10 @@ fun RemoveClipStep() {
     InlineImage("/static/img/setup_remove.jpg")
     MultBr(1)
     Line("Gently (but firmly) push the case wall and pull the circuit board towards you until the tab is out of the case.")
+    Line(
+        "If this method gives you trouble, try facing the circuit board away from you and pulling back " +
+                "on the side walls while putting pressure on the front window with your thumb."
+    )
     Line("Once it is out, slide out the other tab remove the circuit board completely.")
     InlineImage("/static/img/setup_remove_2.jpg")
     Line("Remove the plastic shim and set it aside.")
@@ -107,9 +114,10 @@ fun TransferStep() {
     Line("After about 1 second, you should see the red light on the debugger blink once.")
     Line("After this, you should see a new disk named \"CIRCUITPY\" available on your computer.")
     B { Line("Be careful with the files on this drive - these contain the code that makes the cartridge work!") }
-    Line("Transfer all of the .htclip files you downloaded in step 1 into the directory named \"sound\".")
-    B { Line ( "Only files in the \"sound\" directory will be played!")}
-    Line("This transfer might be slow! Give it a few minutes.")
+    Line("Transfer all of the .htclip files you downloaded in step 1 into the directory named \"sounds\".")
+    B { Line("Only files in the \"sounds\" directory will be played!") }
+    Line("This transfer will be slow! Give it a few minutes.")
+    Line("The cartridges usually ship with a test sound already loaded. You will probably want to delete it.")
     Line("Note - files will be played in alpha-numeric order. You can rename the files if they don't play in the order you want.")
 }
 
@@ -143,4 +151,14 @@ fun ReplaceStep() {
     Line("Gently push the other side of the circuit board down into the case until the second tab clicks into place.")
     Line("It may help to slightly bend the slotted case wall away to allow the circuit board to slide down.")
     InlineImage("/static/img/setup_replace.jpg")
+}
+
+@Composable
+fun PlayAudioStep() {
+    Line("Put your cartridge into your HitClips player!")
+    Line("Due to variances in player size/case thickness, it may fit differently than the original toys.")
+    Line("It's ok if it's a little snug, but don't force it if it feels like something is going to break.")
+    Line("After waiting ~1 second for the cartridge to turn on and load your audio, hit the play button on your player.")
+    Line("Enjoy your audio! If you loaded multiple audio files, they will play each successive time you start and stop.")
+    Line("The cartridge will go to sleep after ~10 seconds of inactivity.")
 }
